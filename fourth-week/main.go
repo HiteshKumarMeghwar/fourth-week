@@ -1,10 +1,11 @@
 package main
 
 import (
-	"assignment/cmd/database"
-	"assignment/controllers"
-	"assignment/views"
 	"fmt"
+	"fourth-week/cmd/database"
+	"fourth-week/controllers"
+	"fourth-week/templates"
+	"fourth-week/views"
 	"html/template"
 	"net/http"
 	"path/filepath"
@@ -39,7 +40,7 @@ func main() {
 
 	route.Get("/", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "dashboard.gohtml")))))
 
-	route.Get("/login", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "login.gohtml")))))
+	route.Get("/login", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "login.gohtml"))))
 
 	route.Post("/loginAuth", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")

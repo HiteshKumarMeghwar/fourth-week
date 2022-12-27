@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"assignment/views"
 	"fmt"
+	"fourth-week/views"
 	"net/http"
 
 	"github.com/gorilla/sessions"
