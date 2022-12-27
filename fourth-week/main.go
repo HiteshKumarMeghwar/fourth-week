@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"fourth-week/cmd/database"
 	"fourth-week/controllers"
-	"fourth-week/templates"
 	"fourth-week/views"
 	"html/template"
 	"net/http"
@@ -40,7 +39,8 @@ func main() {
 
 	route.Get("/", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "dashboard.gohtml")))))
 
-	route.Get("/login", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "login.gohtml"))))
+	route.Get("/login", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "login.gohtml")))))
+	// route.Get("/login", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "templates/login.gohtml"))))
 
 	route.Post("/loginAuth", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -97,6 +97,7 @@ func main() {
 	})
 
 	route.Get("/register", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "register.gohtml")))))
+	route.Get("/faq", controllers.FAQ(views.Must(views.Parse(filepath.Join("templates", "faq.gohtml")))))
 
 	route.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page Not Found...!", http.StatusNotFound)

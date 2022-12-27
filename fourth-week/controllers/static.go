@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"fourth-week/views"
+	"html/template"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -35,5 +36,26 @@ func StaticHandler(tpl views.Template) http.HandlerFunc {
 			}
 		}
 		tpl.Execute(w, nil)
+	}
+}
+
+func FAQ(tpl views.Template) http.HandlerFunc {
+	questions := []struct {
+		Question string
+		Answer   template.HTML
+	}{
+		{
+			Question: "Is there a free version?",
+			Answer:   "yes! We offer a free trail for 30 days.",
+		}, {
+			Question: "What are your support hours?",
+			Answer:   "We have support staff answering emails .....",
+		}, {
+			Question: "How do I contact support?",
+			Answer:   `Email us - <a href="/email.com" > Email Send </a>`,
+		},
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		tpl.Execute(w, questions)
 	}
 }
