@@ -98,8 +98,8 @@ func main() {
 
 	usersC := controllers.Users{}
 	usersC.Templates.New = views.Must(views.Parse(filepath.Join("templates", "register.gohtml")))
-
 	route.Get("/register", usersC.New)
+	route.Post("/register-process", usersC.Create)
 	route.Get("/faq", controllers.FAQ(views.Must(views.Parse(filepath.Join("templates", "faq.gohtml")))))
 	// route.Get("/home", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "home.gohtml")))))
 
