@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"fourth-week/views"
 	"html/template"
 	"net/http"
 
@@ -12,7 +11,7 @@ import (
 // var db = database.Connect()
 var store = sessions.NewCookieStore([]byte("super-secret"))
 
-func StaticHandler(tpl views.Template) http.HandlerFunc {
+func StaticHandler(tpl Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// fmt.Println(tpl.HTMLtpl.Name())
 		// fmt.Println(r.URL.Path)
@@ -39,7 +38,7 @@ func StaticHandler(tpl views.Template) http.HandlerFunc {
 	}
 }
 
-func FAQ(tpl views.Template) http.HandlerFunc {
+func FAQ(tpl Template) http.HandlerFunc {
 	questions := []struct {
 		Question string
 		Answer   template.HTML

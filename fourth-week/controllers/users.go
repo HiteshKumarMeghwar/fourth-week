@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fourth-week/views"
 	"net/http"
 )
 
@@ -10,7 +9,7 @@ type Users struct {
 }
 
 type UsersTemplates struct {
-	New views.Template
+	New Template
 }
 
 func (u Users) New(w http.ResponseWriter, r *http.Request) {
