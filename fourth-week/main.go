@@ -96,7 +96,10 @@ func main() {
 		tpl.Execute(w, nil)
 	})
 
-	route.Get("/register", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "register.gohtml")))))
+	usersC := controllers.Users{}
+	usersC.Templates.New = views.Must(views.Parse(filepath.Join("templates", "register.gohtml")))
+
+	route.Get("/register", usersC.New)
 	route.Get("/faq", controllers.FAQ(views.Must(views.Parse(filepath.Join("templates", "faq.gohtml")))))
 	// route.Get("/home", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "home.gohtml")))))
 
