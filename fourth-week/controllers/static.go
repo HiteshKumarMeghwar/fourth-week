@@ -25,12 +25,13 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 				return
 			}
 			tpl.Execute(w, nil)
+			return
 		} else if r.URL.Path == "/login" {
 			session, _ := store.Get(r, "session")
 			_, ok := session.Values["userId"]
 			fmt.Println("ok: ", ok)
 			if ok {
-				http.Redirect(w, r, "/dashboard", http.StatusFound) // http.StatusFound is 302
+				http.Redirect(w, r, "/", http.StatusFound) // http.StatusFound is 302
 				return
 			}
 		}

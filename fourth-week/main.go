@@ -2,16 +2,15 @@ package main
 
 import (
 	"fmt"
+	"fourth-week/bcryptPassword"
 	"fourth-week/cmd/database"
 	"fourth-week/controllers"
 	"fourth-week/views"
-	"html/template"
 	"net/http"
 	"path/filepath"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
@@ -49,39 +48,31 @@ func main() {
 		password := r.FormValue("password")
 		fmt.Println("Username: ", username, "Password: ", password)
 
-		tpl, err := template.ParseFiles(filepath.Join("templates", "login.gohtml"))
-		if err != nil {
-			panic(err)
-		}
-
 		var userId int
 		var pass string
 		// stmt := "SELECT id, password FROM users WHERE username = ?"
 		// row := db.QueryRow(stmt, username)
 		// err = row.Scan(&userId, &pass)
-		err = db.QueryRow("SELECT id, password FROM users WHERE username = ?", username).Scan(&userId, &pass)
+		err := db.QueryRow("SELECT id, password FROM users WHERE username = $1", username).Scan(&userId, &pass)
 		fmt.Println("hash from db: ", pass)
 		if err != nil {
 			fmt.Println("error selecting Hash in db by Username")
-			tpl.Execute(w, nil)
+			http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
 			return
 		}
 
-		err = bcrypt.CompareHashAndPassword([]byte(pass), []byte(password))
-		if err == nil {
-			tpl, err := template.ParseFiles(filepath.Join("templates", "dashboard.gohtml"))
-			if err != nil {
-				panic(err)
-			}
+		match := bcryptPassword.CheckPasswordHash(password, pass)
+		fmt.Println(match)
+		if match {
 			session, _ := store.Get(r, "session")
 			session.Values["userId"] = userId
 			session.Save(r, w)
-			tpl.Execute(w, nil)
+			http.Redirect(w, r, "/", http.StatusFound) // http.StatusFound is 302
 			return
 		}
 
 		fmt.Println("incorrect password")
-		tpl.Execute(w, nil)
+		http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
 	})
 
 	route.Get("/logout", func(w http.ResponseWriter, r *http.Request) {
@@ -89,11 +80,8 @@ func main() {
 		session, _ := store.Get(r, "session")
 		delete(session.Values, "userId")
 		session.Save(r, w)
-		tpl, err := template.ParseFiles(filepath.Join("templates", "login.gohtml"))
-		if err != nil {
-			panic(err)
-		}
-		tpl.Execute(w, nil)
+		http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+		return
 	})
 
 	usersC := controllers.Users{}
