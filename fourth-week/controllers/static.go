@@ -31,6 +31,7 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 				return
 			}
 			fmt.Println(id)
+
 			var fulname string
 			var username string
 
@@ -38,10 +39,15 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 			if err != nil {
 				panic(err)
 			}
-			// var data map[string] string
-			/* fmt.Println(fulname)
-			fmt.Println(username) */
-			tpl.Execute(w, nil)
+
+			var data struct {
+				Fulname  string
+				Username string
+			}
+			data.Fulname = fulname
+			data.Username = username
+
+			tpl.Execute(w, data)
 			return
 		} else if r.URL.Path == "/login" {
 			session, _ := store.Get(r, "session")
