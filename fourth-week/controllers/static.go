@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"fourth-week/cmd/database"
 	"html/template"
 	"net/http"
 
@@ -16,14 +17,30 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 		// fmt.Println(tpl.HTMLtpl.Name())
 		// fmt.Println(r.URL.Path)
 		// tpl.Execute(w, nil)
+
+		/* Requiring Database */
+		db := database.Connect()
+		defer db.Close()
+
 		if r.URL.Path == "/" {
 			session, _ := store.Get(r, "session")
-			_, ok := session.Values["userId"]
+			id, ok := session.Values["userId"]
 			fmt.Println("ok: ", ok)
 			if !ok {
 				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
 				return
 			}
+			fmt.Println(id)
+			var fulname string
+			var username string
+
+			err := db.QueryRow("SELECT name, username FROM users WHERE id = $1", id).Scan(&fulname, &username)
+			if err != nil {
+				panic(err)
+			}
+			// var data map[string] string
+			/* fmt.Println(fulname)
+			fmt.Println(username) */
 			tpl.Execute(w, nil)
 			return
 		} else if r.URL.Path == "/login" {
