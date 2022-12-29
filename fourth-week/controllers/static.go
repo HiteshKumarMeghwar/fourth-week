@@ -47,6 +47,13 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 			data.Fulname = fulname
 			data.Username = username
 
+			cookie := http.Cookie{
+				Name:     "username",
+				Value:    username,
+				Path:     "/",
+				HttpOnly: true,
+			}
+			http.SetCookie(w, &cookie)
 			tpl.Execute(w, data)
 			return
 		} else if r.URL.Path == "/login" {
@@ -54,6 +61,8 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 			_, ok := session.Values["userId"]
 			fmt.Println("ok: ", ok)
 			if ok {
+				username, _ := r.Cookie("username")
+				fmt.Println("Printing Username: ", username.Value)
 				http.Redirect(w, r, "/", http.StatusFound) // http.StatusFound is 302
 				return
 			}
