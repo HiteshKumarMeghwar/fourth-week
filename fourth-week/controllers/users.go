@@ -11,6 +11,7 @@ import (
 type Users struct {
 	Templates      UsersTemplates
 	SessionService *models.SessionService
+	UserService    *models.UserService
 }
 
 type UsersTemplates struct {
@@ -36,12 +37,10 @@ func (u Users) Create(w http.ResponseWriter, r *http.Request) {
 	fullname := r.FormValue("name")
 	username := r.FormValue("username")
 	password := r.FormValue("password")
+
 	fmt.Println(password)
 	hash, _ := bcryptPassword.HashPassword(password)
 	fmt.Println(hash)
-
-	/* match := bcryptPassword.CheckPasswordHash(password, hash)
-	fmt.Println(match) */
 
 	value, err := db.Exec(`INSERT INTO users(name, username, password) VALUES ($1, $2, $3); `, fullname, username, hash)
 
@@ -49,10 +48,15 @@ func (u Users) Create(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	/* user, err := u.UserService.Create(fullname, username, password)
+
+	if err != nil {
+		panic(err)
+	} */
+
 	// session, err := u.SessionService.Create()
-	fmt.Fprintf(w, "User created: %+v", value)
-	/* if value != nil {
+	if value != nil {
 		http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
 		return
-	} */
+	}
 }

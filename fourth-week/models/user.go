@@ -19,26 +19,28 @@ type UserService struct {
 }
 
 func (us *UserService) Create(name, username, password string) (*User, error) {
-	username = strings.ToLower(username)
+
+	/* Requiring Database */
+	/* db := database.Connect()
+	defer db.Close() */
 	hash, _ := bcryptPassword.HashPassword(password)
-	PasswordHash := string(hash)
+	fmt.Println(hash)
 
 	user := User{
 		Name:     name,
 		Username: username,
-		Password: PasswordHash,
+		Password: password,
 	}
 
 	row := us.DB.QueryRow(`
 	INSERT INTO users(name, username, password) VALUES ($1, $2, $3);
-	`, name, username, PasswordHash)
+	`, name, username, hash)
 
 	err := row.Scan(&user.ID)
 
 	if err != nil {
 		return nil, fmt.Errorf("Create user: %w", err)
 	}
-
 	return &user, nil
 }
 
