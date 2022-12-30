@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"fourth-week/bcryptPassword"
 	"fourth-week/cmd/database"
+	"fourth-week/models"
 	"net/http"
 )
 
 type Users struct {
-	Templates UsersTemplates
+	Templates      UsersTemplates
+	SessionService *models.SessionService
 }
 
 type UsersTemplates struct {
@@ -47,8 +49,10 @@ func (u Users) Create(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	if value != nil {
+	// session, err := u.SessionService.Create()
+	fmt.Fprintf(w, "User created: %+v", value)
+	/* if value != nil {
 		http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
 		return
-	}
+	} */
 }
