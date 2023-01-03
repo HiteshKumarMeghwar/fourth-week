@@ -54,6 +54,7 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 				HttpOnly: true,
 			}
 			http.SetCookie(w, &cookie)
+			// SetCookie(w, CookieSession, session.Token)
 			tpl.Execute(w, data)
 			return
 		} else if r.URL.Path == "/login" {
