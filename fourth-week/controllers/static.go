@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"fourth-week/bcryptPassword"
 	"fourth-week/cmd/database"
 	"html/template"
 	"net/http"
@@ -101,6 +102,87 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 			// fmt.Println(products)
 			tpl.Execute(w, products)
 			return
+		} else if r.URL.Path == "/edit" {
+			session, _ := store.Get(r, "session")
+			_, ok := session.Values["userId"]
+			fmt.Println("ok: ", ok)
+			if !ok {
+				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+				return
+			}
+			r.ParseForm()
+			id := r.FormValue("id")
+			fmt.Println(id)
+
+			var data struct {
+				ID       int
+				Name     string
+				Username string
+				Password string
+			}
+
+			var index int
+			var name string
+			var username string
+			var password string
+
+			err := db.QueryRow("SELECT * FROM users WHERE id = $1", id).Scan(&index, &name, &username, &password)
+			if err != nil {
+				panic(err)
+			}
+
+			data.ID = index
+			data.Name = name
+			data.Username = username
+			data.Password = password
+
+			tpl.Execute(w, data)
+			return
+		} else if r.URL.Path == "/update" {
+			session, _ := store.Get(r, "session")
+			_, ok := session.Values["userId"]
+			fmt.Println("ok: ", ok)
+			if !ok {
+				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+				return
+			}
+			r.ParseForm()
+			id := r.FormValue("id")
+			name := r.FormValue("name")
+			username := r.FormValue("username")
+			password := r.FormValue("password")
+			hash, _ := bcryptPassword.HashPassword(password)
+
+			value, err := db.Exec(`UPDATE users SET name = $1, username = $2, password = $3 WHERE id = $4`, name, username, hash, id)
+			if err != nil {
+				panic(err)
+			}
+
+			if value != nil {
+				http.Redirect(w, r, "/all_users", http.StatusFound) // http.StatusFound is 302
+				return
+			}
+		} else if r.URL.Path == "/delete" {
+			session, _ := store.Get(r, "session")
+			_, ok := session.Values["userId"]
+			fmt.Println("ok: ", ok)
+			if !ok {
+				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+				return
+			}
+
+			r.ParseForm()
+			id := r.FormValue("id")
+
+			value, err := db.Exec(`DELETE FROM users WHERE id=$1;`, id)
+			if err != nil {
+				panic(err)
+			}
+
+			if value != nil {
+				http.Redirect(w, r, "/all_users", http.StatusFound) // http.StatusFound is 302
+				return
+			}
 		}
 		tpl.Execute(w, nil)
 	}

@@ -44,6 +44,9 @@ func main() {
 	route.Get("/login", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "login.gohtml")))))
 	// route.Get("/login", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "templates/login.gohtml"))))
 	route.Get("/all_users", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "users.gohtml")))))
+	route.Get("/edit", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "edit.gohtml")))))
+	route.Post("/update", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "users.gohtml")))))
+	route.Get("/delete", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "users.gohtml")))))
 	route.Post("/loginAuth", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		r.ParseForm()
