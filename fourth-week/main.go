@@ -5,7 +5,6 @@ import (
 	"fourth-week/bcryptPassword"
 	"fourth-week/cmd/database"
 	"fourth-week/controllers"
-	"fourth-week/migrations"
 	"fourth-week/views"
 	"net/http"
 	"path/filepath"
@@ -18,10 +17,10 @@ func main() {
 	/* Requiring Database */
 	db := database.Connect()
 	defer db.Close()
-	err := database.MigrateFS(db, migrations.FS, ".")
+	/* err := database.MigrateFS(db, migrations.FS, ".")
 	if err != nil {
 		panic(err)
-	}
+	} */
 	/* Initialization of Session */
 	var store = sessions.NewCookieStore([]byte("super-secret"))
 
@@ -85,7 +84,6 @@ func main() {
 		delete(session.Values, "userId")
 		session.Save(r, w)
 		http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
-		return
 	})
 
 	usersC := controllers.Users{}

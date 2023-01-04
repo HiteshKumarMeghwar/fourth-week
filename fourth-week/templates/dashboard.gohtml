@@ -8,3 +8,36 @@
         <a href="/logout" >Logout</a>
     </body>
 </html>
+
+<html>
+    <head>
+        <title>Dashboard</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body>
+        <header class="bg-gradient-to-r from-blue-800 to-indigo-800">
+            <nav class="px-8 py-6 flex items-center">
+                <div class="text-4xl pr-8 font-serif">Logo</div>
+                <div class="flex-grow text-center">
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/">Home</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/about">About</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/contact">Contact</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/faq">FAQ</a>
+                </div>
+                <div>
+                    <a class="pr-4" href="/login">Login</a>
+                    <a class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded" href="/register">Register</a>
+                </div>
+            </nav>
+        </header>
+        <div class="py-12 flex justify-center">
+        <div class="px-8 py-8 bg-white rounded shadow">
+        <h1 class="pt-4 pb-8 text-center text-3xl font-bold text-gray-900">Profile</h1>
+        <h6>Username - {{.Fulname}} And Password - {{.Username}} </h6>
+        <a href="/logout" >Logout</a>
+        </div>
+        </div>
+    </body>
+</html>
