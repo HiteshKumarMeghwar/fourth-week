@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Dashboard</title>
+        <title>Users</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.tailwindcss.com"></script>
@@ -24,9 +24,28 @@
         </header>
         <div class="py-12 flex justify-center">
         <div class="px-8 py-8 bg-white rounded shadow">
-        <h1 class="pt-4 pb-8 text-center text-3xl font-bold text-gray-900">Profile</h1>
-        <h6>Username - {{.Fulname}} And Password - {{.Username}} </h6>
+        <h1 class="pt-4 pb-8 text-center text-3xl font-bold text-gray-900">All Users</h1>
+        <table>
+            <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Actions</th>
+            </tr>
+            {{range .}}
+            {{template "data" .}}
+            {{end}}
+        </table>
         </div>
         </div>
     </body>
 </html>
+
+{{define "data"}}
+<tr>
+<td>{{.ID}}</td>
+<td>{{.Name}}</td>
+<td>{{.Username}}</td>
+<td>Actions</td>
+</tr>
+{{end}}

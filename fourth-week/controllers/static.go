@@ -9,6 +9,13 @@ import (
 	"github.com/gorilla/sessions"
 )
 
+type Product struct {
+	ID       int
+	Name     string
+	Username string
+	Password string
+}
+
 // var db = database.Connect()
 var store = sessions.NewCookieStore([]byte("super-secret"))
 
@@ -67,6 +74,33 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 				http.Redirect(w, r, "/", http.StatusFound) // http.StatusFound is 302
 				return
 			}
+		} else if r.URL.Path == "/all_users" {
+			session, _ := store.Get(r, "session")
+			id, ok := session.Values["userId"]
+			fmt.Println("ok: ", ok)
+			if !ok {
+				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+				return
+			}
+			fmt.Println(id)
+
+			rows, err := db.Query("SELECT * FROM users")
+			if err != nil {
+				panic(err)
+			}
+			defer rows.Close()
+			var products []Product
+			for rows.Next() {
+				var p Product
+				err = rows.Scan(&p.ID, &p.Name, &p.Username, &p.Password)
+				if err != nil {
+					panic(err)
+				}
+				products = append(products, p)
+			}
+			// fmt.Println(products)
+			tpl.Execute(w, products)
+			return
 		}
 		tpl.Execute(w, nil)
 	}
