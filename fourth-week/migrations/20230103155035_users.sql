@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE users (
+CREATE TABLE userss (
     id SERIAL PRIMARY KEY,
     name TEXT,
     username TEXT UNIQUE NOT NULL,
