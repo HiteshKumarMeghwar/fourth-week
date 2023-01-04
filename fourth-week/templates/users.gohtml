@@ -25,16 +25,20 @@
         <div class="py-12 flex justify-center">
         <div class="px-8 py-8 bg-white rounded shadow">
         <h1 class="pt-4 pb-8 text-center text-3xl font-bold text-gray-900">All Users</h1>
-        <table>
+        <table class="table-auto">
+        <thead>
             <tr>
             <th>ID</th>
             <th>Name</th>
             <th>Username</th>
             <th>Actions</th>
             </tr>
+        </thead>
+        <tbody>
             {{range .}}
             {{template "data" .}}
             {{end}}
+        </tbody>
         </table>
         </div>
         </div>
@@ -46,6 +50,6 @@
 <td>{{.ID}}</td>
 <td>{{.Name}}</td>
 <td>{{.Username}}</td>
-<td>Actions</td>
+<td><a href="/edit">Edit</a> | <a href="/delete">Delete</a></td>
 </tr>
 {{end}}
