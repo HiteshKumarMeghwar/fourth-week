@@ -27,13 +27,9 @@ func main() {
 	route.Post("/update", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "users.gohtml")))))
 	route.Get("/delete", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "users.gohtml")))))
 	route.Post("/loginAuth", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "login.gohtml")))))
-
 	route.Post("/register-process", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "register.gohtml")))))
-
 	route.Get("/logout", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "dashboard.gohtml")))))
-
 	route.Get("/faq", controllers.FAQ(views.Must(views.Parse(filepath.Join("templates", "faq.gohtml")))))
-
 	route.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page Not Found...!", http.StatusNotFound)
 	})
