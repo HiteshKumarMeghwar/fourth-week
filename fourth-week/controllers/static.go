@@ -6,6 +6,7 @@ import (
 	"fourth-week/cmd/database"
 	"html/template"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/sessions"
 )
@@ -183,6 +184,114 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 				http.Redirect(w, r, "/all_users", http.StatusFound) // http.StatusFound is 302
 				return
 			}
+		} else if r.URL.Path == "/loginAuth" {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			r.ParseForm()
+			username := r.FormValue("username")
+			password := r.FormValue("password")
+			fmt.Println("Username: ", username, "Password: ", password)
+
+			/* tpl, err := template.ParseFiles(filepath.Join("templates", "login.gohtml"))
+
+			if err != nil {
+				panic(err)
+			} */
+
+			var ValidateError struct {
+				Username string
+				Password string
+			}
+
+			if len(strings.TrimSpace(username)) == 0 || len(strings.TrimSpace(password)) == 0 {
+				if len(strings.TrimSpace(username)) == 0 {
+					ValidateError.Username = "Username is Mandate"
+				}
+				if len(strings.TrimSpace(password)) == 0 {
+					ValidateError.Password = "Password is Mandate"
+				}
+
+				tpl.Execute(w, ValidateError)
+				return
+			}
+
+			var userId int
+			var pass string
+			// stmt := "SELECT id, password FROM users WHERE username = ?"
+			// row := db.QueryRow(stmt, username)
+			// err = row.Scan(&userId, &pass)
+			err := db.QueryRow("SELECT id, password FROM users WHERE username = $1", username).Scan(&userId, &pass)
+			fmt.Println("hash from db: ", pass)
+			if err != nil {
+				fmt.Println("error selecting Hash in db by Username")
+				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+				return
+			}
+
+			match := bcryptPassword.CheckPasswordHash(password, pass)
+			fmt.Println(match)
+			if match {
+				session, _ := store.Get(r, "session")
+				session.Values["userId"] = userId
+				session.Save(r, w)
+				http.Redirect(w, r, "/", http.StatusFound) // http.StatusFound is 302
+				return
+			}
+
+			fmt.Println("incorrect password")
+			http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+		} else if r.URL.Path == "/register-process" {
+			err := r.ParseForm()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+
+			fullname := r.FormValue("name")
+			username := r.FormValue("username")
+			password := r.FormValue("password")
+
+			var ValidateError struct {
+				Submitted string
+				Fullname  string
+				Username  string
+				Password  string
+			}
+
+			if len(strings.TrimSpace(fullname)) == 0 || len(strings.TrimSpace(username)) == 0 || len(strings.TrimSpace(password)) == 0 {
+				if len(strings.TrimSpace(fullname)) == 0 {
+					ValidateError.Fullname = "Fullname is Mandate"
+				}
+				if len(strings.TrimSpace(username)) == 0 {
+					ValidateError.Username = "Username is Mandate"
+				}
+				if len(strings.TrimSpace(password)) == 0 {
+					ValidateError.Password = "Password is Mandate"
+				}
+
+				tpl.Execute(w, ValidateError)
+				return
+			}
+
+			fmt.Println(password)
+			hash, _ := bcryptPassword.HashPassword(password)
+			fmt.Println(hash)
+
+			value, err := db.Exec(`INSERT INTO users(name, username, password) VALUES ($1, $2, $3); `, fullname, username, hash)
+
+			if err != nil {
+				panic(err)
+			}
+
+			if value != nil {
+				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+				return
+			}
+		} else if r.URL.Path == "/logout" {
+			fmt.Println("logouting .........! ")
+			session, _ := store.Get(r, "session")
+			delete(session.Values, "userId")
+			session.Save(r, w)
+			http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
 		}
 		tpl.Execute(w, nil)
 	}

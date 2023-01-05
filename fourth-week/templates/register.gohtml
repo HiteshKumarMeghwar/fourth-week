@@ -26,16 +26,28 @@
         <h1 class="pt-4 pb-8 text-center text-3xl font-bold text-gray-900">Register</h1>
         <form method="post" action="/register-process">
             <div class="py-2">
+                <span style="color: red;">*</span>
                 <label for="name" class="text-sm font-semibold text-gray-800">Full Name</label>
-                <input type="text" name="name" id="name" placeholder="Enter Full Name" class="w-full px-3 py-2 border border-gray-300 placeholder-gray-600 text-gray-800 rounded" required />
+                {{ if .Fullname }}
+                <p style="color: red;">{{.Fullname}}</p>
+                {{end}}
+                <input type="text" name="name" id="name" placeholder="Enter Full Name" class="w-full px-3 py-2 border border-gray-300 placeholder-gray-600 text-gray-800 rounded" />
             </div>
             <div class="py-2">
+                <span style="color: red;">*</span>
                 <label for="username" class="text-sm font-semibold text-gray-800">Username</label>
-                <input type="text" name="username" id="username" placeholder="Enter Username" class="w-full px-3 py-2 border border-gray-300 placeholder-gray-600 text-gray-800 rounded" required />
+                {{ if .Username }}
+                <p style="color: red;">{{.Username}}</p>
+                {{end}}
+                <input type="text" name="username" id="username" placeholder="Enter Username" class="w-full px-3 py-2 border border-gray-300 placeholder-gray-600 text-gray-800 rounded" />
             </div>
             <div class="py-2">
+                <span style="color: red;">*</span>
                 <label for="password" class="text-sm font-semibold text-gray-800">Password</label>
-                <input type="text" name="password" id="password" placeholder="Enter Password" class="w-full px-3 py-2 border border-gray-300 placeholder-gray-600 text-gray-800 rounded" required />
+                {{ if .Password }}
+                <p style="color: red;">{{.Password}}</p>
+                {{end}}
+                <input type="text" name="password" id="password" placeholder="Enter Password" class="w-full px-3 py-2 border border-gray-300 placeholder-gray-600 text-gray-800 rounded" />
             </div>
             <div class="py-2">
                 <button type="submit" class="w-full py-4 px-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded font-bold text-lg">Register</button>
