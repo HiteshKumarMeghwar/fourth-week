@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+
+	database.LoadEnvVariables()
 	/* Requiring Database */
 	db := database.Connect()
 	defer db.Close()

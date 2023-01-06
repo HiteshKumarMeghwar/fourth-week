@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"io/fs"
+	"os"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
@@ -23,14 +24,13 @@ func (cfg PostgresConfig) String() string {
 }
 
 func Connect() (db *sql.DB) {
-
 	cfg := PostgresConfig{
-		Host:     "localhost",
-		Port:     "5432",
-		User:     "postgres",
-		Password: "Hitesh@1230",
-		Database: "assginment_3rd_week",
-		SSLMode:  "disable",
+		Host:     os.Getenv("HOST"),
+		Port:     os.Getenv("PORT"),
+		User:     os.Getenv("USER"),
+		Password: os.Getenv("PASSWORD"),
+		Database: os.Getenv("DATABASE"),
+		SSLMode:  os.Getenv("SSMODE"),
 	}
 
 	db, err := sql.Open("pgx", cfg.String())

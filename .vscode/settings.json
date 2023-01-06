@@ -3,11 +3,13 @@
         "assginment",
         "dbname",
         "fulname",
+        "godotenv",
         "gohtml",
         "logouting",
         "Ltpl",
         "pressly",
         "sslmode",
+        "SSMODE",
         "stretchr",
         "Userdata"
     ]
