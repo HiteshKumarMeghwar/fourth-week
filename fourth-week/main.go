@@ -39,7 +39,7 @@ func main() {
 	fmt.Println("Stating the server on :8080 port ... !")
 	http.ListenAndServe(":8080", route)
 
-	/* ................................   Now workable code   .............................. */
+	/* ................................   Non workable code   .............................. */
 
 	// usersC := controllers.Users{}
 	// usersC.Templates.New = views.Must(views.Parse(filepath.Join("templates", "register.gohtml")))
