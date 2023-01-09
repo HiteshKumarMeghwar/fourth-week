@@ -16,6 +16,7 @@ type Product struct {
 	Name     string
 	Username string
 	Password string
+	RoleID   int
 }
 
 // var db = database.Connect()
@@ -43,8 +44,9 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 
 			var fulname string
 			var username string
+			var role_id int
 
-			err := db.QueryRow("SELECT name, username FROM users WHERE id = $1", id).Scan(&fulname, &username)
+			err := db.QueryRow("SELECT name, username, role_id FROM users WHERE id = $1", id).Scan(&fulname, &username, &role_id)
 			if err != nil {
 				panic(err)
 			}
@@ -52,9 +54,11 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 			var data struct {
 				Fulname  string
 				Username string
+				RoleID   int
 			}
 			data.Fulname = fulname
 			data.Username = username
+			data.RoleID = role_id
 
 			cookie := http.Cookie{
 				Name:     "username",
@@ -94,7 +98,7 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 			var products []Product
 			for rows.Next() {
 				var p Product
-				err = rows.Scan(&p.ID, &p.Name, &p.Username, &p.Password)
+				err = rows.Scan(&p.ID, &p.Name, &p.Username, &p.Password, &p.RoleID)
 				if err != nil {
 					panic(err)
 				}
@@ -120,14 +124,16 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 				Name     string
 				Username string
 				Password string
+				RoleID   int
 			}
 
 			var index int
 			var name string
 			var username string
 			var password string
+			var role_id int
 
-			err := db.QueryRow("SELECT * FROM users WHERE id = $1", id).Scan(&index, &name, &username, &password)
+			err := db.QueryRow("SELECT * FROM users WHERE id = $1", id).Scan(&index, &name, &username, &password, &role_id)
 			if err != nil {
 				panic(err)
 			}
@@ -136,6 +142,7 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 			data.Name = name
 			data.Username = username
 			data.Password = password
+			data.RoleID = role_id
 
 			tpl.Execute(w, data)
 			return
@@ -276,7 +283,7 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 			hash, _ := bcryptPassword.HashPassword(password)
 			fmt.Println(hash)
 
-			value, err := db.Exec(`INSERT INTO users(name, username, password) VALUES ($1, $2, $3); `, fullname, username, hash)
+			value, err := db.Exec(`INSERT INTO users(name, username, password, role_id) VALUES ($1, $2, $3, $4); `, fullname, username, hash, 3)
 
 			if err != nil {
 				panic(err)
