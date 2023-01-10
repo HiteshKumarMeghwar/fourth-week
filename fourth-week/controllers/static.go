@@ -12,11 +12,12 @@ import (
 )
 
 type Product struct {
-	ID       int
-	Name     string
-	Username string
-	Password string
-	RoleID   int
+	ID         int
+	Name       string
+	Username   string
+	Password   string
+	RoleID     int
+	Session_id interface{}
 }
 
 // var db = database.Connect()
@@ -88,20 +89,23 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
 				return
 			}
-			fmt.Println(id)
+			// fmt.Println(id)
 
 			rows, err := db.Query("SELECT * FROM users")
 			if err != nil {
 				panic(err)
 			}
 			defer rows.Close()
+
 			var products []Product
+			// products = append(products, Product{Session_id: id})
 			for rows.Next() {
 				var p Product
 				err = rows.Scan(&p.ID, &p.Name, &p.Username, &p.Password, &p.RoleID)
 				if err != nil {
 					panic(err)
 				}
+				p.Session_id = id
 				products = append(products, p)
 			}
 			// fmt.Println(products)

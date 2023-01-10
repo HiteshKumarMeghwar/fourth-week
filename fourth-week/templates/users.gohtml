@@ -53,9 +53,11 @@
             </tr>
         </thead>
         <tbody>
+        {{if .}}
             {{range .}}
             {{template "data" .}}
             {{end}}
+        {{end}}
         </tbody>
         </table>
         </div>
@@ -65,10 +67,16 @@
 </html>
 
 {{define "data"}}
+
 <tr>
 <th scope="row">{{.ID}}</th>
 <td>{{.Name}}</td>
 <td>{{.Username}}</td>
-<td><a href="/edit?id={{.ID}}">Edit</a> | <a href="/delete?id={{.ID}}">Delete</a></td>
+<td>
+{{if ne .Session_id .ID}}
+<a href="/edit?id={{.ID}}">Edit</a> 
+<a href="/delete?id={{.ID}}">Delete</a>
+{{end}}
+</td>
 </tr>
 {{end}}
