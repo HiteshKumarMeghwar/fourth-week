@@ -32,6 +32,12 @@ func main() {
 	route.Post("/register-process", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "register.gohtml")))))
 	route.Get("/logout", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "dashboard.gohtml")))))
 	route.Get("/faq", controllers.FAQ(views.Must(views.Parse(filepath.Join("templates", "faq.gohtml")))))
+	route.Get("/posts", controllers.HandlePosts(views.Must(views.Parse(filepath.Join("templates", "posts.gohtml")))))
+	route.Get("/create_post", controllers.HandlePosts(views.Must(views.Parse(filepath.Join("templates", "create_post.gohtml")))))
+	route.Post("/create_post_process", controllers.HandlePosts(views.Must(views.Parse(filepath.Join("templates", "create_post.gohtml")))))
+	route.Get("/edit_post", controllers.HandlePosts(views.Must(views.Parse(filepath.Join("templates", "edit_post.gohtml")))))
+	route.Get("/update_post", controllers.HandlePosts(views.Must(views.Parse(filepath.Join("templates", "posts.gohtml")))))
+	route.Get("/delete_post", controllers.HandlePosts(views.Must(views.Parse(filepath.Join("templates", "posts.gohtml")))))
 	route.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page Not Found...!", http.StatusNotFound)
 	})

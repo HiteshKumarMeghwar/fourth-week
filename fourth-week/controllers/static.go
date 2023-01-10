@@ -20,7 +20,6 @@ type Product struct {
 	Session_id interface{}
 }
 
-// var db = database.Connect()
 var store = sessions.NewCookieStore([]byte("super-secret"))
 
 func StaticHandler(tpl Template) http.HandlerFunc {

@@ -1,9 +1,10 @@
 <html>
     <head>
-        <title>Dashboard</title>
+        <title>Posts</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     </head>
     <body>
         <header class="bg-gradient-to-r from-blue-800 to-indigo-800">
@@ -25,17 +26,42 @@
         </header>
         <div class="py-12 flex justify-center">
         <div class="px-8 py-8 bg-white rounded shadow">
-        <h1 class="pt-4 pb-8 text-center text-3xl font-bold text-gray-900">
-        {{if eq .RoleID 1 }}
-        Admin
-        {{else if eq .RoleID 2 }}
-        Author
-        {{ else}}
-        User
+        <h1 class="pt-4 pb-8 text-center text-3xl font-bold text-gray-900">Posts</h1>
+        <a href="/create_post" class="btn btn-primary bt-min">Create Post</a>
+        <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Summary</th>
+            <th scope="col">Description</th>
+            <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{if .}}
+            {{range .}}
+            {{template "data" .}}
+            {{end}}
         {{end}}
-        - Pannel</h1>
-        <h6>Username - {{.Fulname}} And Password - {{.Username}} </h6>
+        </tbody>
+        </table>
         </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
 </html>
+
+{{define "data"}}
+
+<tr>
+<th scope="row">{{.ID}}</th>
+<td>{{.Title}}</td>
+<td>{{.Summary}}</td>
+<td>{{.Description}}</td>
+<td>
+<a href="/edit_post?id={{.ID}}">Edit</a> 
+<a href="/delete_post?id={{.ID}}">Delete</a>
+</td>
+</tr>
+{{end}}
