@@ -35,7 +35,9 @@
             <th scope="col">Title</th>
             <th scope="col">Summary</th>
             <th scope="col">Description</th>
+            {{/* {{if ne .RoleID 3}} */}}
             <th scope="col">Actions</th>
+            {{/* {{end}} */}}
             </tr>
         </thead>
         <tbody>
@@ -53,7 +55,7 @@
 </html>
 
 {{define "data"}}
-
+{{if eq .RoleID 1}}
 <tr>
 <th scope="row">{{.ID}}</th>
 <td>{{.Title}}</td>
@@ -64,4 +66,33 @@
 <a href="/delete_post?id={{.ID}}">Delete</a>
 </td>
 </tr>
+{{end}}
+{{if eq .RoleID 2}}
+<tr>
+<th scope="row">{{.ID}}</th>
+<td>{{.Title}}</td>
+<td>{{.Summary}}</td>
+<td>{{.Description}}</td>
+<td>
+{{if eq .Session_id .UserID}}
+<a href="/edit_post?id={{.ID}}">Edit</a> 
+<a href="/delete_post?id={{.ID}}">Delete</a>
+{{end}}
+</td>
+</tr>
+{{end}}
+{{if eq .RoleID 3}}
+{{/* {{if eq .Session_id .UserID}} */}}
+<tr>
+<th scope="row">{{.ID}}</th>
+<td>{{.Title}}</td>
+<td>{{.Summary}}</td>
+<td>{{.Description}}</td>
+<td>
+{{/* <a href="/edit_post?id={{.ID}}">Edit</a> 
+<a href="/delete_post?id={{.ID}}">Delete</a> */}}
+</td>
+</tr>
+{{/* {{end}} */}}
+{{end}}
 {{end}}

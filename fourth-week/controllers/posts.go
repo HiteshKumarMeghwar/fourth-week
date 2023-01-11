@@ -15,6 +15,8 @@ type Post struct {
 	Summary     string
 	Description string
 	Session_id  interface{}
+	RoleID      int
+	UserID      int
 }
 
 func HandlePosts(tpl Template) http.HandlerFunc {
@@ -24,6 +26,15 @@ func HandlePosts(tpl Template) http.HandlerFunc {
 		db := database.Connect()
 		defer db.Close()
 
+		session, _ := store.Get(r, "session")
+		id, ok := session.Values["userId"]
+		fmt.Println("ok: ", ok)
+		if !ok {
+			http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+			return
+		}
+		fmt.Println(id)
+
 		if r.URL.Path == "/posts" {
 			session, _ := store.Get(r, "session")
 			id, ok := session.Values["userId"]
@@ -32,7 +43,12 @@ func HandlePosts(tpl Template) http.HandlerFunc {
 				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
 				return
 			}
-			fmt.Println(id)
+
+			var role_id int
+			err := db.QueryRow("SELECT role_id FROM users WHERE id = $1", id).Scan(&role_id)
+			if err != nil {
+				panic(err)
+			}
 
 			rows, err := db.Query("SELECT * FROM posts")
 			if err != nil {
@@ -43,10 +59,11 @@ func HandlePosts(tpl Template) http.HandlerFunc {
 			var posts []Post
 			for rows.Next() {
 				var p Post
-				err = rows.Scan(&p.ID, &p.Title, &p.Summary, &p.Description)
+				err = rows.Scan(&p.ID, &p.Title, &p.Summary, &p.Description, &p.UserID)
 				if err != nil {
 					panic(err)
 				}
+				p.RoleID = role_id
 				p.Session_id = id
 				posts = append(posts, p)
 			}
@@ -90,7 +107,7 @@ func HandlePosts(tpl Template) http.HandlerFunc {
 				return
 			}
 
-			value, err := db.Exec(`INSERT INTO posts(title_post, summary_post, descritption_post) VALUES ($1, $2, $3); `, title, summary, description)
+			value, err := db.Exec(`INSERT INTO posts(title_post, summary_post, descritption_post, user_id) VALUES ($1, $2, $3, $4); `, title, summary, description, id)
 
 			if err != nil {
 				panic(err)
