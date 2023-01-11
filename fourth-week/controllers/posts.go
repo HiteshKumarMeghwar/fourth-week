@@ -126,14 +126,16 @@ func HandlePosts(tpl Template) http.HandlerFunc {
 				Title       string
 				Summary     string
 				Description string
+				UserID      int
 			}
 
 			var index int
 			var title string
 			var summary string
 			var description string
+			var user_id int
 
-			err := db.QueryRow("SELECT * FROM posts WHERE id = $1", id).Scan(&index, &title, &summary, &description)
+			err := db.QueryRow("SELECT * FROM posts WHERE id = $1", id).Scan(&index, &title, &summary, &description, &user_id)
 			if err != nil {
 				panic(err)
 			}
@@ -142,6 +144,7 @@ func HandlePosts(tpl Template) http.HandlerFunc {
 			data.Title = title
 			data.Summary = summary
 			data.Description = description
+			data.UserID = user_id
 
 			tpl.Execute(w, data)
 			return
