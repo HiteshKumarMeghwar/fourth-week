@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <title>Edit Post</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body>
+        <header class="bg-gradient-to-r from-blue-800 to-indigo-800">
+            <nav class="px-8 py-6 flex items-center">
+                <div class="text-4xl pr-8 font-serif">Logo</div>
+                <div class="flex-grow text-center">
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/">Home</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/all_users">All Users</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/about">About</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/contact">Contact</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/faq">FAQ</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/posts">Posts</a>
+                </div>
+                <div>
+                    <a class="pr-4" href="/logout">Logout</a>
+                    <a class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded" href="/register">Register</a>
+                </div>
+            </nav>
+        </header>
+        <div class="py-12 flex justify-center">
+        <div class="px-8 py-8 bg-white rounded shadow">
+        <h1 class="pt-4 pb-8 text-center text-3xl font-bold text-gray-900">Update Post</h1>
+        <form method="post" action="/update_post">
+            <div class="py-2">
+                <label for="post_title" class="text-sm font-semibold text-gray-800">Post Title</label>
+                <input type="text" value="{{.Title}}" name="post_title" id="post_title" placeholder="Enter Post Title" class="w-full px-3 py-2 border border-gray-300 placeholder-gray-600 text-gray-800 rounded" required />
+            </div>
+            <div class="py-2">
+                <label for="post_summary" class="text-sm font-semibold text-gray-800">Post Summary</label>
+                <input type="text" value="{{.Summary}}" name="post_summary" id="post_summary" placeholder="Enter Post Summary" class="w-full px-3 py-2 border border-gray-300 placeholder-gray-600 text-gray-800 rounded" required />
+            </div>
+            <div class="py-2">
+                <label for="post_description" class="text-sm font-semibold text-gray-800">Post Description</label>
+                <input type="text" value="{{.Description}}" name="post_description" id="post_description" placeholder="Enter Post Description" class="w-full px-3 py-2 border border-gray-300 placeholder-gray-600 text-gray-800 rounded" required />
+                <input type="hidden" value="{{.ID}}" name="id" />
+            </div>
+            <div class="py-2">
+                <button type="submit" class="w-full py-4 px-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded font-bold text-lg">Update Post</button>
+            </div>
+            <div class="py-2 w-full flex justify-between">
+                <p class="text-xs text-gray-500">
+                    <a href="/posts">Back</a>
+                </p>
+            </div>
+        </form>
+        </div>
+        </div>
+    </body>
+</html>

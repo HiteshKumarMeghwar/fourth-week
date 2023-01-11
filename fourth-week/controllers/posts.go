@@ -101,14 +101,62 @@ func HandlePosts(tpl Template) http.HandlerFunc {
 				return
 			}
 		} else if r.URL.Path == "/edit_post" {
-			tpl.Execute(w, nil)
+			r.ParseForm()
+			id := r.FormValue("id")
+
+			var data struct {
+				ID          int
+				Title       string
+				Summary     string
+				Description string
+			}
+
+			var index int
+			var title string
+			var summary string
+			var description string
+
+			err := db.QueryRow("SELECT * FROM posts WHERE id = $1", id).Scan(&index, &title, &summary, &description)
+			if err != nil {
+				panic(err)
+			}
+
+			data.ID = index
+			data.Title = title
+			data.Summary = summary
+			data.Description = description
+
+			tpl.Execute(w, data)
 			return
 		} else if r.URL.Path == "/update_post" {
-			tpl.Execute(w, nil)
-			return
+			r.ParseForm()
+			id := r.FormValue("id")
+			title := r.FormValue("post_title")
+			summary := r.FormValue("post_summary")
+			description := r.FormValue("post_description")
+
+			value, err := db.Exec(`UPDATE posts SET title_post = $1, summary_post = $2, descritption_post = $3 WHERE id = $4`, title, summary, description, id)
+			if err != nil {
+				panic(err)
+			}
+
+			if value != nil {
+				http.Redirect(w, r, "/posts", http.StatusFound) // http.StatusFound is 302
+				return
+			}
 		} else if r.URL.Path == "/delete_post" {
-			tpl.Execute(w, nil)
-			return
+			r.ParseForm()
+			id := r.FormValue("id")
+
+			value, err := db.Exec(`DELETE FROM posts WHERE id=$1;`, id)
+			if err != nil {
+				panic(err)
+			}
+
+			if value != nil {
+				http.Redirect(w, r, "/posts", http.StatusFound) // http.StatusFound is 302
+				return
+			}
 		}
 
 		tpl.Execute(w, nil)
