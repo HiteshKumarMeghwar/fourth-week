@@ -12,12 +12,13 @@ import (
 )
 
 type Product struct {
-	ID         int
-	Name       string
-	Username   string
-	Password   string
-	RoleID     int
-	Session_id interface{}
+	ID          int
+	Name        string
+	Username    string
+	Password    string
+	RoleID      int
+	LoginRoleID string
+	Session_id  interface{}
 }
 
 var store = sessions.NewCookieStore([]byte("super-secret"))
@@ -88,7 +89,6 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
 				return
 			}
-			// fmt.Println(id)
 
 			rows, err := db.Query("SELECT * FROM users")
 			if err != nil {
@@ -302,6 +302,59 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 			delete(session.Values, "userId")
 			session.Save(r, w)
 			http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+		} else if r.URL.Path == "/manage_role" {
+			session, _ := store.Get(r, "session")
+			id, ok := session.Values["userId"]
+			fmt.Println("ok: ", ok)
+			if !ok {
+				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+				return
+			}
+
+			var role_id int
+			err := db.QueryRow("SELECT role_id FROM users WHERE id = $1", id).Scan(&role_id)
+			if err != nil {
+				panic(err)
+			}
+
+			if role_id == 2 || role_id == 3 {
+				http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
+				return
+			}
+
+			rows, err := db.Query("SELECT * FROM users")
+			if err != nil {
+				panic(err)
+			}
+			defer rows.Close()
+
+			var products []Product
+			for rows.Next() {
+				var p Product
+				err = rows.Scan(&p.ID, &p.Name, &p.Username, &p.Password, &p.RoleID)
+				if err != nil {
+					panic(err)
+				}
+				p.Session_id = id
+				products = append(products, p)
+			}
+			tpl.Execute(w, products)
+			return
+		} else if r.URL.Path == "/edit_role_process" {
+			fmt.Println("edit_role_process")
+			r.ParseForm()
+			user_id := r.FormValue("user_id")
+			id := r.FormValue("edit-" + user_id)
+
+			value, err := db.Exec(`UPDATE users SET role_id = $1 WHERE id = $2`, id, user_id)
+			if err != nil {
+				panic(err)
+			}
+
+			if value != nil {
+				http.Redirect(w, r, "/manage_role", http.StatusFound) // http.StatusFound is 302
+				return
+			}
 		}
 		tpl.Execute(w, nil)
 	}

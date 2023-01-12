@@ -38,6 +38,8 @@ func main() {
 	route.Get("/edit_post", controllers.HandlePosts(views.Must(views.Parse(filepath.Join("templates", "edit_post.gohtml")))))
 	route.Post("/update_post", controllers.HandlePosts(views.Must(views.Parse(filepath.Join("templates", "posts.gohtml")))))
 	route.Get("/delete_post", controllers.HandlePosts(views.Must(views.Parse(filepath.Join("templates", "posts.gohtml")))))
+	route.Get("/manage_role", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "manage_role.gohtml")))))
+	route.Post("/edit_role_process", controllers.StaticHandler(views.Must(views.Parse(filepath.Join("templates", "manage_role.gohtml")))))
 	route.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page Not Found...!", http.StatusNotFound)
 	})

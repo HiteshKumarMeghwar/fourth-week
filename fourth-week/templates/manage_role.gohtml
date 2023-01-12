@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <title>Users</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    </head>
+    <body>
+        <header class="bg-gradient-to-r from-blue-800 to-indigo-800">
+            <nav class="px-8 py-6 flex items-center">
+                <div class="text-4xl pr-8 font-serif">Logo</div>
+                <div class="flex-grow text-center">
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/">Home</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/all_users">All Users</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/about">About</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/contact">Contact</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/faq">FAQ</a>
+                    <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/posts">Posts</a>
+                </div>
+                <div>
+                    <a class="pr-4" href="/logout">Logout</a>
+                    <a class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded" href="/register">Register</a>
+                </div>
+            </nav>
+        </header>
+        <div class="py-12 flex justify-center">
+        <div class="px-8 py-8 bg-white rounded shadow">
+        <h1 class="pt-4 pb-8 text-center text-3xl font-bold text-gray-900">Manage Role</h1>
+        <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Role</th>
+            <th scope="col" class="text-center">Manage</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{if .}}
+            {{range .}}
+            {{if ne .Session_id .ID}}
+            {{template "data" .}}
+            {{end}}
+            {{end}}
+        {{end}}
+        </tbody>
+        </table>
+        </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    </body>
+</html>
+
+{{define "data"}}
+
+<tr>
+<th scope="row">{{.ID}}</th>
+<td>{{.Name}}</td>
+<td><b>{{if eq .RoleID 1}}<p class="badge bg-success">Admin</p>{{end}}{{if eq .RoleID 2}}<p class="badge bg-primary">Author<p>{{end}}{{if eq .RoleID 3}}<p class="badge bg-info text-dark">User<p>{{end}}</b></td>
+<td>
+<form method="POST" action="/edit_role_process">
+<input type="hidden" name="user_id" value="{{.ID}}" />
+<select name="edit-{{.ID}}">
+<option value="1" {{if eq .RoleID 1}}selected{{end}}>Admin</option>
+<option value="2" {{if eq .RoleID 2}}selected{{end}}>Author</option>
+<option value="3" {{if eq .RoleID 3}}selected{{end}}>User</option>
+</select>
+<button type="submit" class="btn btn-success bg-success">Change</button>
+</form>
+</td>
+</tr>
+{{end}}
